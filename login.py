@@ -46,9 +46,9 @@ def login_page():
             if login(username, password):
                 st.session_state.username = username
                 go_to_home()
-                st.success("Login bem-sucedido!")
+                st.toast("Login bem-sucedido!", icon="✅")
             else:
-                st.error("Usuário ou senha incorretos.")
+                st.toast("Usuário ou senha incorretos.", icon="❌")
 
     with col2:
         if st.button("Cadastrar", key="register_button"):

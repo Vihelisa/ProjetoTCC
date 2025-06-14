@@ -1,8 +1,8 @@
 import streamlit as st
 from auth import login, register
-import paginas.home as home
-import paginas.pagina1 as pagina1
-import paginas.pagina2 as pagina2
+from paginas.home import home
+from paginas.pagina1 import pagina1
+from paginas.pagina2 import pagina2
 from login import login_page
 from register import register_page
 from new_password import password_page
@@ -42,11 +42,11 @@ def main_app():
     st.sidebar.title(f"Bem-vindo, {st.session_state.username}")
     page = st.sidebar.radio("Navegar para:", ["Página Inicial", "Página 1", "Página 2"])
     if page == "Página Inicial":
-        home.show()
+        home()
     elif page == "Página 1":
-        pagina1.show()
+        pagina1()
     elif page == "Página 2":
-        pagina2.show()
+        pagina2()
 
 if st.session_state.page == "login":
     login_page()

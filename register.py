@@ -34,9 +34,9 @@ def register_page():
     password = st.text_input("Nova senha", type="password")
     if st.button("Registrar"):
         if register(username, password):
-            st.success("Cadastro realizado com sucesso!")
+            st.toast("Cadastro realizado com sucesso!", icon="✅")
             go_to_login()
         else:
-            st.error("Usuário já existe.")
+            st.toast("Usuário já existe.", icon="❌")
     if st.button("Voltar"):
         go_to_login()

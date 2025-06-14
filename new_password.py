@@ -34,9 +34,9 @@ def password_page():
     password = st.text_input("Confirme nova senha:", type="password")
     if st.button("Registrar"):
         if register(new_password, password):
-            st.success("Cadastro realizado com sucesso!")
+            st.toast("Cadastro realizado com sucesso!", icon="✅")
             go_to_login()
         else:
-            st.error("Erro ao cadastrar nova senha.")
+            st.toast("Erro ao cadastrar nova senha.", icon="❌")
     if st.button("Voltar"):
         go_to_login()
