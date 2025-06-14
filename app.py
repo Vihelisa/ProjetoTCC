@@ -1,8 +1,19 @@
 import streamlit as st
 from auth import login, register
-import pages.home as home
-import pages.pagina1 as pagina1
-import pages.pagina2 as pagina2
+import paginas.home as home
+import paginas.pagina1 as pagina1
+import paginas.pagina2 as pagina2
+from login import login_page
+
+st.markdown("""
+    <style>
+    * {
+        color: #0B046E !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 
 if "page" not in st.session_state:
     st.session_state.page = "login"
@@ -21,19 +32,6 @@ def go_to_home():
     st.session_state.page = "home"
     st.session_state.logged_in = True
 
-def login_page():
-    st.title("Login")
-    username = st.text_input("Usuário")
-    password = st.text_input("Senha", type="password")
-    if st.button("Entrar"):
-        if login(username, password):
-            st.session_state.username = username
-            go_to_home()
-            st.success("Login bem-sucedido!")
-        else:
-            st.error("Usuário ou senha incorretos.")
-    if st.button("Cadastrar"):
-        go_to_register()
 
 def register_page():
     st.title("Cadastro")
