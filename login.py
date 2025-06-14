@@ -56,6 +56,6 @@ def login_page():
 
     # Botão extra abaixo das colunas
     if st.button("Esqueci minha senha!", key="forgot_password_button"):
-     go_to_register()
+        go_to_new_password()
 
 

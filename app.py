@@ -5,6 +5,7 @@ import paginas.pagina1 as pagina1
 import paginas.pagina2 as pagina2
 from login import login_page
 from register import register_page
+from new_password import password_page
 
 st.markdown("""
     <style>
@@ -29,6 +30,9 @@ def go_to_login():
 def go_to_register():
     st.session_state.page = "register"
 
+def go_to_new_password():
+    st.session_state.page = "password"
+
 def go_to_home():
     st.session_state.page = "home"
     st.session_state.logged_in = True
@@ -48,6 +52,8 @@ if st.session_state.page == "login":
     login_page()
 elif st.session_state.page == "register":
     register_page()
+elif st.session_state.page == "password":
+    password_page()
 elif st.session_state.page == "home" and st.session_state.logged_in:
     main_app()
 else:
