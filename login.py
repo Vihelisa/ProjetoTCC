@@ -12,6 +12,9 @@ def go_to_home():
 def go_to_register():
     st.session_state.page = "register"
 
+def go_to_new_password():
+    st.session_state.page = "password"
+
 
 def image_to_base64(img):
     buffered = BytesIO()
@@ -32,12 +35,27 @@ def login_page():
     st.title("Login")
     username = st.text_input("Usuário")
     password = st.text_input("Senha", type="password")
-    if st.button("Entrar"):
-        if login(username, password):
-            st.session_state.username = username
-            go_to_home()
-            st.success("Login bem-sucedido!")
-        else:
-            st.error("Usuário ou senha incorretos.")
-    if st.button("Cadastrar"):
-        go_to_register()
+
+    
+    # Criar duas colunas para os botões
+    col1, col2 = st.columns([1, 8])
+
+    with col1:
+        # Estilo aplicado apenas ao botão "Entrar"
+        if st.button("Entrar", key="login_button"):
+            if login(username, password):
+                st.session_state.username = username
+                go_to_home()
+                st.success("Login bem-sucedido!")
+            else:
+                st.error("Usuário ou senha incorretos.")
+
+    with col2:
+        if st.button("Cadastrar", key="register_button"):
+            go_to_register()
+
+    # Botão extra abaixo das colunas
+    if st.button("Esqueci minha senha!", key="forgot_password_button"):
+     go_to_register()
+
+

@@ -4,6 +4,7 @@ import paginas.home as home
 import paginas.pagina1 as pagina1
 import paginas.pagina2 as pagina2
 from login import login_page
+from register import register_page
 
 st.markdown("""
     <style>
@@ -32,19 +33,6 @@ def go_to_home():
     st.session_state.page = "home"
     st.session_state.logged_in = True
 
-
-def register_page():
-    st.title("Cadastro")
-    username = st.text_input("Novo usuário")
-    password = st.text_input("Nova senha", type="password")
-    if st.button("Registrar"):
-        if register(username, password):
-            st.success("Cadastro realizado com sucesso!")
-            go_to_login()
-        else:
-            st.error("Usuário já existe.")
-    if st.button("Voltar"):
-        go_to_login()
 
 def main_app():
     st.sidebar.title(f"Bem-vindo, {st.session_state.username}")
