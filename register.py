@@ -4,6 +4,8 @@ from auth import login, register
 from io import BytesIO
 import base64
 
+from functions.functions import *
+
 def go_to_login():
     st.session_state.page = "login"
 
@@ -14,10 +16,6 @@ def go_to_home():
     st.session_state.page = "home"
     st.session_state.logged_in = True
 
-def image_to_base64(img):
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode()
 
 def register_page():
     image = Image.open("title.png")

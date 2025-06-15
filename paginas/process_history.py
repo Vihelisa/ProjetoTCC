@@ -1,13 +1,7 @@
 import streamlit as st
-
 from functions.functions import *
 
 
-
-def home():
-    # Estilo do topo
+def process_history():
     topbar() #função fo estilo do topo do site
-
-    st.title("Página Inicial")
-
-   
+    st.title("Histórico de Processos")

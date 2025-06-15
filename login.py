@@ -4,6 +4,8 @@ from auth import login, register
 from io import BytesIO
 import base64
 
+from functions.functions import *
+
 
 def go_to_home():
     st.session_state.page = "home"
@@ -15,11 +17,6 @@ def go_to_register():
 def go_to_new_password():
     st.session_state.page = "password"
 
-
-def image_to_base64(img):
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode()
 
 
 def login_page():    
@@ -38,7 +35,7 @@ def login_page():
 
     
     # Criar duas colunas para os botões
-    col1, col2 = st.columns([1, 8])
+    col1, col2 = st.columns([1, 16])
 
     with col1:
         # Estilo aplicado apenas ao botão "Entrar"
