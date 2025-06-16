@@ -12,6 +12,7 @@ from paginas.process_register import process_register
 from paginas.process_history import process_history
 from paginas.dashboard import dashboard
 from paginas.user_profile import user_profile
+from paginas.financial_area import financial_area
 
 
 
@@ -51,7 +52,7 @@ def main_app():
         st.markdown(f"### 👋 Bem-vindo, {st.session_state.username}")
         page = option_menu(
             menu_title=None,
-            options=["Área de Trabalho", "Cadastro de Processos", "Histórico de Processos", "Dashboard", "Perfil do Usuário"],
+            options=["Área de Trabalho", "Cadastro de Processos", "Histórico de Processos", "Área Financeira", "Dashboard", "Perfil do Usuário"],
             styles={
             "container": {"background-color": "#f0f2f6", 'width':"100%"},
             "nav-link": {"font-size": "15px", "text-align": "center", 'width':"100%"},
@@ -62,6 +63,8 @@ def main_app():
         home()
     elif page == "Cadastro de Processos":
         process_register()
+    elif page == "Área Financeira":
+        financial_area()
     elif page == "Histórico de Processos":
         process_history()
     elif page == "Dashboard":
