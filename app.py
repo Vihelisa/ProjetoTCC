@@ -3,7 +3,7 @@ from streamlit_option_menu import option_menu
 
 st.set_page_config(layout="wide")
 
-from auth import login, register
+from config.auth import login, register
 from login import login_page
 from register import register_page
 from new_password import password_page

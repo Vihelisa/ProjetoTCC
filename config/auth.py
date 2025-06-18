@@ -2,8 +2,17 @@
 import streamlit as st
 import json
 import os
+import cx_Oracle
 
 USERS_FILE = "data/users.json"
+
+def database_conection(user_bd, password_bd, tns_bd):
+    try:
+        conn = cx_Oracle.connect(user=str(user_bd), password=str(password_bd), dsn=str(tns_bd))
+        cursor = conn.cursor()
+        return conn, cursor
+    except cx_Oracle.DatabaseError as e:
+        return None, None
 
 def load_users():
     if os.path.exists(USERS_FILE):

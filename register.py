@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from auth import login, register
+from config.auth import login, register
 from io import BytesIO
 import base64
 
