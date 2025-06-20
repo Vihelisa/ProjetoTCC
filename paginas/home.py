@@ -6,8 +6,5 @@ from functions.functions import *
 
 def home():
     # Estilo do topo
-    topbar() #função fo estilo do topo do site
-
-    st.title("Página Inicial")
-
+    topbar("Página Inicial") #função fo estilo do topo do site
    
