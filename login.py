@@ -40,7 +40,7 @@ def login_page():
     with col1:
         # Estilo aplicado apenas ao botão "Entrar"
         if st.button("Entrar", key="login_button"):
-            if login(username, password):
+            if login(username, password) == True:
                 st.session_state.username = username
                 go_to_home()
                 st.toast("Login bem-sucedido!", icon="✅")

@@ -1,0 +1,4 @@
+{
+    "loginUserData": "select * from login_user_data",
+    "userBD": "select * from users"
+}
