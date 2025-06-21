@@ -1,6 +1,6 @@
 import streamlit as st
 
-from config.auth import database_conection, make_db_highq_login
+from config.auth import *
 from functions.functions import *
 
 conn, cursor = database_conection()

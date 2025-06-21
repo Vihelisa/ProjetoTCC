@@ -1,4 +1,9 @@
 {
     "loginUserData": "select * from login_user_data",
-    "userBD": "select * from users"
+    "userBD": "select * from users",
+    "estadosBR": "select * from estados_brasil",
+    "classProcess": "select * from classes_processo",
+    "pathProcess": "select * from caminho_processo",
+    "processJurid": "select * from processos_juridicos",
+    "processFiles": "select * from arquivos_processos"
 }

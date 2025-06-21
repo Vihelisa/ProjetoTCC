@@ -46,6 +46,20 @@ def make_db_highq_login(cursor):
     return df_login_user_data, df_user_bd
 
 
+def make_db_register(cursor):
+
+    #script_dir = os.path.dirname(__file__)
+    file_path = os.path.join('config/query.json')
+
+    with open(file_path) as file:
+        querys = json.load(file)
+    
+    df_estados = get_data(querys['estadosBR'], cursor)
+    df_class_process = get_data(querys['classProcess'], cursor)
+    df_path_process = get_data(querys['pathProcess'], cursor)
+    return df_estados, df_class_process, df_path_process
+
+
 def load_users():
     if os.path.exists(USERS_FILE):
         with open(USERS_FILE, "r") as f:
