@@ -61,9 +61,6 @@ def login(username, password):
     df_login_user_data, df_user_bd = make_db_highq_login(cursor)
     if username in df_login_user_data['EMAIL'].to_list() and password in df_login_user_data['LOGIN_PASSWORD'].to_list():
         print("Usuário encontrado no banco de dados.")
-        user_bd_login = df_login_user_data[df_login_user_data['EMAIL'] == username]['USERNAME'].values[0]
-        password_bd_login = df_user_bd[df_user_bd['USERNAME'] == user_bd_login]['PASSWORD'].values[0]
-        print(f"Username: {user_bd_login}, Password: {password_bd_login}")
         return True
     else: 
         print("Usuário ou senha inválidos.") 

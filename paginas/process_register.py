@@ -1,9 +1,9 @@
 import streamlit as st
 from functions.functions import *
+from config.auth import database_conection
 
 
 def process_register():
-    
     topbar('Cadastro de Processos Jurídicos') #função fo estilo do topo do site
 
     tab1, tab2 = st.tabs(["Cadastro Manual", "Buscar no Jusbrasil"])
