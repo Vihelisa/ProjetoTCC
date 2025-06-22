@@ -118,3 +118,18 @@ def register(register_dict, register_bd_dict):
     else:
         st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
         return False
+
+
+def insert_user_data(conn, cursor, register_dict):
+    sql = f"""
+        UPDATE login_user_data 
+        SET NAME = :1, LOGIN_PASSWORD = :2, NUM_OAB = :3
+        WHERE EMAIL = :4
+    """
+    try:
+        cursor.execute(sql, (register_dict['nome'], register_dict['senha'], register_dict['oab'], register_dict['email']))
+        conn.commit()
+    except cx_Oracle.IntegrityError:
+        st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
+        return False
+    return True
