@@ -60,6 +60,19 @@ def make_db_register(cursor):
     return df_estados, df_class_process, df_path_process
 
 
+def make_db_process(cursor):
+
+    #script_dir = os.path.dirname(__file__)
+    file_path = os.path.join('config/query.json')
+
+    with open(file_path) as file:
+        querys = json.load(file)
+    
+    df_process = get_data(querys['processJurid'], cursor)
+    return df_process
+
+
+
 def load_users():
     if os.path.exists(USERS_FILE):
         with open(USERS_FILE, "r") as f:
