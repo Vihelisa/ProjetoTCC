@@ -17,6 +17,9 @@ def go_to_register():
 def go_to_new_password():
     st.session_state.page = "password"
 
+def go_to_login():
+    st.session_state.page = "login"
+
 
 
 def login_page():    
@@ -45,7 +48,9 @@ def login_page():
                 go_to_home()
                 st.toast("Login bem-sucedido!", icon="✅")
             else:
+                #go_to_login()
                 st.toast("Usuário ou senha incorretos.", icon="❌")
+                
 
     with col2:
         if st.button("Cadastrar", key="register_button"):

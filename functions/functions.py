@@ -3,7 +3,18 @@ from io import BytesIO
 import base64
 import streamlit as st
 import cx_Oracle
+from config.auth import *
 
+def conect_database_with_user():
+    username = st.session_state.username
+
+    conn, cursor = database_conection()
+    df_login_user_data, df_user_bd = make_db_highq_login(cursor)
+    user_bd_login = df_login_user_data[df_login_user_data['EMAIL'] == username]['USERNAME'].values[0]
+    print(f"Usuário logado: {username}")
+    conn_user, cursor_user = database_conection(user_bd_login, user_bd_login)
+
+    return conn_user, cursor_user
 
 def image_to_base64(img):
     buffered = BytesIO()
@@ -100,3 +111,32 @@ def send_values_prc(register_process_dict, conn, cursor):
         st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
         return False
     return True
+
+
+def dict_edit_process(conn, cursor, process_path, case_value, def_case_value,
+                      payed_value, judge_name, obs, process_number):
+
+
+    register_process_dict = {
+        'p_numero_processo': process_number,
+        'p_caminho_processual': process_path,
+        'p_valor_causa': case_value,
+        'p_nome_juiz': judge_name,
+        'p_valor_definido_causa': def_case_value,
+        'p_valor_pago_causa': payed_value,
+        'p_observacoes_clob': obs
+    }
+    send_values_edit_process(register_process_dict, conn, cursor)
+
+
+def send_values_edit_process(register_process_dict, conn, cursor):
+    sql = '''
+    UPDATE processos_juridicos
+    SET VALOR_CAUSA = :1,
+        VALOR_DEFERIDO_CAUSA = :2
+        VALOR_PAGO_CAUSA = :3,
+        NOME_JUIZ = :4,
+        OBSERVACOES_CLOB = :5,
+        CAMINHO_PROCESSUAL = :6
+    WHERE NUMERO_PROCESSO = :7
+    '''

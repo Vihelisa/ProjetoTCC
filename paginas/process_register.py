@@ -1,16 +1,16 @@
 import streamlit as st
 from functions.functions import *
 from config.auth import *
-from paginas.home import conn_user, cursor_user
 
-
-df_estados, df_class_process, df_path_process = make_db_register(cursor_user)
-sigla_estados_list = df_estados['SIGLA_ESTADO'].tolist()
-class_process_list = df_class_process['CLASSE_PROCESSO'].tolist()
-path_process_list = df_path_process['CAMINHO_PROCESSUAL'].tolist()
 
 
 def process_register():
+    conn_user, cursor_user = conect_database_with_user()
+    df_estados, df_class_process, df_path_process = make_db_register(cursor_user)
+    sigla_estados_list = df_estados['SIGLA_ESTADO'].tolist()
+    class_process_list = df_class_process['CLASSE_PROCESSO'].tolist()
+    path_process_list = df_path_process['CAMINHO_PROCESSUAL'].tolist()
+
     topbar('Cadastro de Processos Jurídicos') #função fo estilo do topo do site
 
     tab1, tab2 = st.tabs(["Cadastro Manual", "Buscar no Jusbrasil"])

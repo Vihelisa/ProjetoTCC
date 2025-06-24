@@ -2,13 +2,14 @@ import streamlit as st
 
 from config.auth import *
 from functions.functions import *
-from paginas.home import conn_user, cursor_user, username
-
-df_login_user_data, df_user_bd = make_db_highq_login(cursor_user)
-line_user = df_login_user_data[df_login_user_data['EMAIL'] == username].reset_index(drop=True)
 
 
 def user_profile():
+    conn_user, cursor_user = conect_database_with_user()
+    df_login_user_data, df_user_bd = make_db_highq_login(cursor_user)
+    username = st.session_state.username
+    line_user = df_login_user_data[df_login_user_data['EMAIL'] == username].reset_index(drop=True)
+    
     topbar("Perfil do usuário") #função fo estilo do topo do site
 
     # Simulação de dados do usuário
