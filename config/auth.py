@@ -86,7 +86,8 @@ def save_users(users):
 def login(username, password):
     conn, cursor = database_conection()
     df_login_user_data, df_user_bd = make_db_highq_login(cursor)
-    if username in df_login_user_data['EMAIL'].to_list() and password in df_login_user_data['LOGIN_PASSWORD'].to_list():
+    password_bd = df_login_user_data[df_login_user_data['EMAIL'] == username]['LOGIN_PASSWORD'].reset_index(drop=True)[0]
+    if username in df_login_user_data['EMAIL'].to_list() and password == password_bd:
         print("Usuário encontrado no banco de dados.")
         return True
     else: 
