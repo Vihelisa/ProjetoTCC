@@ -48,17 +48,21 @@ def process_history():
         df_selecionado = df_process[df_process["NUMERO_PROCESSO"] == selecionado].reset_index(drop=True)
         with st.form("editar_processo"):
             st.markdown("### Editar Processo")
-            process_path = st.selectbox("Escolha o Caminho Processual:", path_process_list)
-            case_value = st.text_input("Valor da Causa", df_selecionado["VALOR_CAUSA"][0])
-            def_case_value = st.text_input("Valor Deferido da Causa:", df_selecionado["VALOR_DEFERIDO_CAUSA"][0])
-            payed_value = st.text_input("Valor Pago pela Causa:", df_selecionado["VALOR_PAGO_CAUSA"][0])
+            indice_padrao = path_process_list.index(df_selecionado['CAMINHO_PROCESSUAL'][0])
+            process_path = st.selectbox("Escolha o Caminho Processual:", path_process_list, index=indice_padrao)
+            valor_causa_raw = df_selecionado["VALOR_CAUSA"][0]
+            case_value = st.text_input("Valor da Causa", str(0 if pd.isna(valor_causa_raw) else valor_causa_raw))
+            def_case_value_raw = df_selecionado["VALOR_DEFERIDO_CAUSA"][0]
+            def_case_value = st.text_input("Valor Deferido da Causa:", str(0 if pd.isna(def_case_value_raw) else def_case_value_raw))
+            payed_value_raw = df_selecionado["VALOR_PAGO_CAUSA"][0]
+            payed_value = st.text_input("Valor Pago pela Causa:", str(0 if pd.isna(payed_value_raw) else payed_value_raw))
             judge_name = st.text_input("Nome do Juiz:", df_selecionado["NOME_JUIZ"][0])
             obs = st.text_area("Observações sobre o Caso:", df_selecionado["OBSERVACOES_CLOB"][0])
 
-            
             salvar = st.form_submit_button("Salvar Alterações")
 
             if salvar:
                 # Aqui você atualizaria o banco de dados com os novos valores
+                dict_edit_process(conn_user, cursor_user, process_path, case_value, def_case_value, payed_value, judge_name, obs, selecionado)
                 st.success("Processo atualizado com sucesso!")
     

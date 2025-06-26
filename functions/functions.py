@@ -117,7 +117,7 @@ def dict_edit_process(conn, cursor, process_path, case_value, def_case_value,
                       payed_value, judge_name, obs, process_number):
 
 
-    register_process_dict = {
+    edit_process_dict = {
         'p_numero_processo': process_number,
         'p_caminho_processual': process_path,
         'p_valor_causa': case_value,
@@ -126,17 +126,26 @@ def dict_edit_process(conn, cursor, process_path, case_value, def_case_value,
         'p_valor_pago_causa': payed_value,
         'p_observacoes_clob': obs
     }
-    send_values_edit_process(register_process_dict, conn, cursor)
+    send_values_edit_process(edit_process_dict, conn, cursor)
 
 
-def send_values_edit_process(register_process_dict, conn, cursor):
+def send_values_edit_process(edit_process_dict, conn, cursor):
     sql = '''
     UPDATE processos_juridicos
     SET VALOR_CAUSA = :1,
-        VALOR_DEFERIDO_CAUSA = :2
+        VALOR_DEFERIDO_CAUSA = :2,
         VALOR_PAGO_CAUSA = :3,
         NOME_JUIZ = :4,
         OBSERVACOES_CLOB = :5,
         CAMINHO_PROCESSUAL = :6
     WHERE NUMERO_PROCESSO = :7
     '''
+
+    try:
+        cursor.execute(sql, (edit_process_dict['p_valor_causa'], edit_process_dict['p_valor_definido_causa'], edit_process_dict['p_valor_pago_causa'], edit_process_dict['p_nome_juiz'], edit_process_dict['p_observacoes_clob'], edit_process_dict['p_caminho_processual'], edit_process_dict['p_numero_processo']))
+        conn.commit()
+        print("Dados atualizados com sucesso!\n")
+    except cx_Oracle.IntegrityError:
+        st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
+        return False
+    return True
