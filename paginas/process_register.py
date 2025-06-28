@@ -1,19 +1,24 @@
 import streamlit as st
+import requests
+from requests.auth import HTTPBasicAuth
+
+
 from functions.functions import *
 from config.auth import *
 
+token_acesso = "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
 
 
 def process_register():
     conn_user, cursor_user = conect_database_with_user()
-    df_estados, df_class_process, df_path_process = make_db_register(cursor_user)
+    df_estados, df_class_process, df_path_process, df_datajud_endpoints = make_db_register(cursor_user)
     sigla_estados_list = df_estados['SIGLA_ESTADO'].tolist()
     class_process_list = df_class_process['CLASSE_PROCESSO'].tolist()
     path_process_list = df_path_process['CAMINHO_PROCESSUAL'].tolist()
 
     topbar('Cadastro de Processos Jurídicos') #função fo estilo do topo do site
 
-    tab1, tab2 = st.tabs(["Cadastro Manual", "Buscar no Jusbrasil"])
+    tab1, tab2 = st.tabs(["Cadastro Manual", "Consultas Externas"])
 
     with tab1:
         st.subheader("Cadastro Manual")
@@ -58,11 +63,48 @@ def process_register():
             except Exception as e:
                 st.error(f"Erro ao cadastrar o processo: {e}")
                 print(f"Erro ao cadastrar o processo: {e}")
-
             
 
 
 
     with tab2:
-        st.subheader("Buscar no Jusbrasil")
-        
+        st.subheader("Consulta de Processo - API Pública do CNJ (Conselho Nacional de Justiça)")
+
+        st.markdown("Digite o número do processo no formato **00000000000000000000** (sem caracteres especiais) para consultar os dados disponíveis na API pública do CNJ (DataJud).")
+
+        numero_processo = st.text_input("Número do Processo (CNJ):")
+
+        if st.button("Consultar"):
+            if numero_processo:
+                with st.spinner("Consultando processo..."):
+                    url = "https://api-publica.datajud.cnj.jus.br/api_publica_tjsp/_search"
+                    headers = {
+                        "Authorization": f"APIKey {token_acesso}",
+                        "Content-Type": "application/json"
+                    }
+                    body_json = {
+                        "query": {
+                            "match": {
+                                "numeroProcesso": numero_processo
+                            }
+                        }
+                    }
+                    response = requests.post(url, headers=headers, json=body_json)
+
+                    if response.status_code == 200:
+                        dados = response.json()
+                        if dados:
+                            dict_hits = dados.get('hits', {}).get('hits', [])
+                            if not dict_hits:
+                                st.warning("Não há dados relacionados a esse número de processo.")
+                            else:
+                                dict_hits = dict_hits[0].get('_source', {})
+                                st.json(dict_hits)
+                        else:
+                            st.warning("Nenhum dado encontrado para esse número de processo.")
+                    else:
+                        st.error(f"Erro ao consultar a API: {response.status_code}")
+            else:
+                st.warning("Por favor, insira um número de processo válido.")
+
+                

@@ -57,7 +57,8 @@ def make_db_register(cursor):
     df_estados = get_data(querys['estadosBR'], cursor)
     df_class_process = get_data(querys['classProcess'], cursor)
     df_path_process = get_data(querys['pathProcess'], cursor)
-    return df_estados, df_class_process, df_path_process
+    df_datajud_endpoints = get_data(querys['datajudEndpoints'], cursor)
+    return df_estados, df_class_process, df_path_process, df_datajud_endpoints
 
 
 def make_db_process(cursor):
