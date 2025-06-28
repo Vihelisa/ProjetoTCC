@@ -15,6 +15,9 @@ def process_register():
     sigla_estados_list = df_estados['SIGLA_ESTADO'].tolist()
     class_process_list = df_class_process['CLASSE_PROCESSO'].tolist()
     path_process_list = df_path_process['CAMINHO_PROCESSUAL'].tolist()
+    df_justice = df_datajud_endpoints.groupby("JUSTICA")["TRIBUNAL"].count().reset_index(name="quantidade_tribunais")
+    justice_list = df_justice['JUSTICA'].tolist()
+
 
     topbar('Cadastro de Processos Jurídicos') #função fo estilo do topo do site
 
@@ -73,11 +76,14 @@ def process_register():
         st.markdown("Digite o número do processo no formato **00000000000000000000** (sem caracteres especiais) para consultar os dados disponíveis na API pública do CNJ (DataJud).")
 
         numero_processo = st.text_input("Número do Processo (CNJ):")
+        justice = st.selectbox("Selecione uma opção de Justiça:", justice_list)
+        tribunal_list = df_datajud_endpoints[df_datajud_endpoints['JUSTICA'] == justice]['TRIBUNAL'].unique().tolist() 
+        tribunal = st.selectbox("Selecione o Tribunal:", tribunal_list)
+        url = df_datajud_endpoints[df_datajud_endpoints['TRIBUNAL'] == tribunal]['ENDPOINT'].reset_index(drop=True).values[0]
 
         if st.button("Consultar"):
             if numero_processo:
                 with st.spinner("Consultando processo..."):
-                    url = "https://api-publica.datajud.cnj.jus.br/api_publica_tjsp/_search"
                     headers = {
                         "Authorization": f"APIKey {token_acesso}",
                         "Content-Type": "application/json"
@@ -100,6 +106,36 @@ def process_register():
                             else:
                                 dict_hits = dict_hits[0].get('_source', {})
                                 st.json(dict_hits)
+
+                                # Processar os dados para tabela
+                                movimentos = dict_hits.get("movimentos", [])
+                                linhas = []
+
+                                for mov in movimentos:
+                                    base = {
+                                        "dataHora": mov.get("dataHora"),
+                                        "nome": mov.get("nome"),
+                                        "codigo": mov.get("codigo")
+                                    }
+                                    complementos = mov.get("complementosTabelados", [])
+                                    if complementos:
+                                        for comp in complementos:
+                                            linha = base.copy()
+                                            linha.update({
+                                                "complemento_nome": comp.get("nome"),
+                                                "complemento_descricao": comp.get("descricao"),
+                                                "complemento_valor": comp.get("valor")
+                                            })
+                                            linhas.append(linha)
+                                    else:
+                                        linhas.append(base)
+
+                                df_movimentos = pd.DataFrame(linhas)
+
+                                # Exibir no Streamlit
+                                st.title("📄 Movimentos Processuais")
+                                st.dataframe(df_movimentos)
+
                         else:
                             st.warning("Nenhum dado encontrado para esse número de processo.")
                     else:
