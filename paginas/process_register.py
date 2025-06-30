@@ -31,12 +31,19 @@ def process_register():
             lawyer_name = st.text_input("Nome do Advogado", key="lawyer_name")
             process_path = st.selectbox("Escolha o Caminho Processual:", path_process_list)
             case_value = st.text_input("Valor da Causa", key="case_value")
+            if case_value is '': case_value = 0
+            else: case_value = float(case_value.replace(',', '.'))
+            re_justice = st.selectbox("Selecione uma opção de Justiça:", justice_list, key="re_justice")
 
         with col2:
             process_class = st.selectbox("Escolha a Classe do Processo:", class_process_list)
             num_oab = st.text_input("Número da OAB:", key="num_oab")
             judge_name = st.text_input("Nome do Juiz:", key="judge_name")
             def_case_value = st.text_input("Valor Deferido da Causa:", key="def_case_value")
+            if def_case_value is '': def_case_value = 0 
+            else: def_case_value = float(def_case_value.replace(',', '.'))
+            tribunal_list = df_datajud_endpoints[df_datajud_endpoints['JUSTICA'] == re_justice]['TRIBUNAL'].unique().tolist() 
+            tribunal_re = st.selectbox("Selecione o Tribunal:", tribunal_list, key="tribunal_re")
 
         with col3:
             process_rito = st.selectbox(
@@ -46,6 +53,8 @@ def process_register():
             customer_name = st.text_input("Nome do(a) Cliente/Empresa:", key="customer_name")
             state_name = st.selectbox("Escolha o Estado em que corre o processo:", sigla_estados_list)
             payed_value = st.text_input("Valor Pago pela Causa:", key="payed_value")
+            if payed_value is '': payed_value = 0
+            else: payed_value = float(payed_value.replace(',', '.'))
 
         obs = st.text_area("Observações sobre o Caso:", key="obs")
         
@@ -55,13 +64,17 @@ def process_register():
             st.success(f"Arquivo '{uploaded_file.name}' carregado com sucesso!")
             pdf_bytes = uploaded_file.read()
             nome_arquivo = uploaded_file.name
+        else:
+            st.warning("Nenhum arquivo carregado. O processo será cadastrado sem PDF.")
+            pdf_bytes = None
+            nome_arquivo = None
 
         if st.button("Cadastrar Processo"):
             try:
                 dict_prc_register_process(conn_user, cursor_user, process_number, lawyer_name, process_path, case_value,
                               process_class, num_oab, judge_name, def_case_value,
                               process_rito, customer_name, state_name, payed_value,
-                              obs, pdf_bytes, nome_arquivo)
+                              obs, re_justice, tribunal_re, pdf_bytes, nome_arquivo)
                 st.success("Processo cadastrado com sucesso!")
             except Exception as e:
                 st.error(f"Erro ao cadastrar o processo: {e}")

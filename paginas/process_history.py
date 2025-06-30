@@ -10,7 +10,7 @@ from config.auth import make_db_process
 def process_history():
     conn_user, cursor_user = conect_database_with_user()
     df_process = make_db_process(cursor_user)
-    df_estados, df_class_process, df_path_process = make_db_register(cursor_user)
+    df_estados, df_class_process, df_path_process, df_datajud_endpoints = make_db_register(cursor_user)
 
     topbar("Histórico de Processos") #função fo estilo do topo do site
 
