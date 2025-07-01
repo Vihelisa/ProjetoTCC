@@ -118,19 +118,40 @@ def process_register():
                                 st.warning("Não há dados relacionados a esse número de processo.")
                             else:
                                 dict_hits = dict_hits[0].get('_source', {})
-                                st.json(dict_hits)
+                                #st.json(dict_hits)
 
                                 # Processar os dados para tabela
-                                movimentos = dict_hits.get("movimentos", [])
                                 linhas = []
+                                base = {}
+                                base["Número Processo"] = dict_hits.get("numeroProcesso")
+                                base["Tribunal"] = dict_hits.get("tribunal")
+                                base["Classe Processo"] = dict_hits.get("classeProcesso", {}).get("nome")
+                               
 
+                                movimentos = dict_hits.get("movimentos", [])
                                 for mov in movimentos:
-                                    base = {
-                                        "dataHora": mov.get("dataHora"),
-                                        "nome": mov.get("nome"),
-                                        "codigo": mov.get("codigo")
-                                    }
-                                    complementos = mov.get("complementosTabelados", [])
+                                    base["Caminho Processual Atualizado"] = mov.get("nome")
+                                    base['DataHora'] = mov.get("dataHora")
+                                    try:
+                                        complementos = mov.get("complementosTabelados", [])
+                                        for comp in complementos:
+                                            base["Complemento Nome"] = comp.get("nome")
+                                            base["Complemento Descrição"] = comp.get("descricao")
+                                            linhas.append(base.copy())  # <- Cópia aqui
+                                    except:
+                                        base["Complemento Nome"] = None
+                                        base["Complemento Descrição"] = None
+                                        linhas.append(base.copy())  # <- E aqui também
+
+                                
+                                df_movimentos = pd.DataFrame(linhas)
+
+                                # Exibir no Streamlit
+                                st.title("Movimentos Processuais")
+                                st.dataframe(df_movimentos)
+
+                                '''
+                                    
                                     if complementos:
                                         for comp in complementos:
                                             linha = base.copy()
@@ -143,11 +164,7 @@ def process_register():
                                     else:
                                         linhas.append(base)
 
-                                df_movimentos = pd.DataFrame(linhas)
-
-                                # Exibir no Streamlit
-                                st.title("📄 Movimentos Processuais")
-                                st.dataframe(df_movimentos)
+                                '''
 
                         else:
                             st.warning("Nenhum dado encontrado para esse número de processo.")
