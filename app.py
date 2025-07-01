@@ -52,14 +52,14 @@ def main_app():
         st.markdown(f"### 👋 Bem-vindo, {st.session_state.username}")
         page = option_menu(
             menu_title=None,
-            options=["Área de Trabalho", "Cadastro de Processos", "Histórico de Processos", "Área Financeira", "Dashboard", "Perfil do Usuário"],
+            options=["Página Inicial", "Cadastro de Processos", "Histórico de Processos", "Área Financeira", "Dashboard", "Perfil do Usuário"],
             styles={
             "container": {"background-color": "#f0f2f6", 'width':"100%"},
             "nav-link": {"font-size": "15px", "text-align": "center", 'width':"100%"},
             "nav-link-selected": {"background-color": "#0B046E", "color": "white", 'width':"100%"},
             }
         )
-    if page == "Área de Trabalho":
+    if page == "Página Inicial":
         home()
     elif page == "Cadastro de Processos":
         process_register()

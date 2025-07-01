@@ -73,16 +73,17 @@ def make_db_process(cursor):
     return df_process
 
 
-
 def load_users():
     if os.path.exists(USERS_FILE):
         with open(USERS_FILE, "r") as f:
             return json.load(f)
     return {}
 
+
 def save_users(users):
     with open(USERS_FILE, "w") as f:
         json.dump(users, f)
+
 
 def login(username, password):
     conn, cursor = database_conection()
@@ -136,6 +137,30 @@ def register(register_dict, register_bd_dict):
         return False
 
 
+def register_new_password(email, new_password):
+    conn, cursor = database_conection()
+    status_new_password = update_new_password(conn, cursor, email, new_password)
+    if status_new_password:
+        return True
+    else:
+        return False
+
+
+def update_new_password(conn, cursor, email, new_password):
+    sql = f"""
+        UPDATE login_user_data 
+        SET LOGIN_PASSWORD = :1
+        WHERE EMAIL = :2
+    """
+    try:
+        cursor.execute(sql, (new_password, email))
+        conn.commit()
+        return True
+    except cx_Oracle.IntegrityError as e:
+        print(f"Erro ao tentar atualizar senha: {e}")
+        return False
+
+
 def update_user_data(conn, cursor, register_dict):
     sql = f"""
         UPDATE login_user_data 
@@ -143,7 +168,7 @@ def update_user_data(conn, cursor, register_dict):
         WHERE EMAIL = :4
     """
     try:
-        cursor.execute(sql, (register_dict['nome'], register_dict['senha'], register_dict['num_oab'], register_dict['email']))
+        cursor.execute(sql, (register_dict['nome'], register_dict['senha'], register_dict['oab'], register_dict['email']))
         conn.commit()
         return True
     except cx_Oracle.IntegrityError as e:

@@ -28,14 +28,19 @@ def password_page():
         </div>
         """,unsafe_allow_html=True)
 
+
     st.title("Nova Senha")
+    email = st.text_input("Digite seu email:")
     new_password = st.text_input("Digite sua nova senha:")
     password = st.text_input("Confirme nova senha:", type="password")
     if st.button("Registrar"):
-        if register(new_password, password):
-            st.toast("Cadastro realizado com sucesso!", icon="✅")
-            go_to_login()
+        if new_password != password:
+            st.toast("As senhas não coincidem.", icon="❌")
         else:
-            st.toast("Erro ao cadastrar nova senha.", icon="❌")
+            if register_new_password(email, new_password):
+                st.toast("Cadastro realizado com sucesso!", icon="✅")
+                go_to_login()
+            else:
+                st.toast("Erro ao cadastrar nova senha.", icon="❌")
     if st.button("Voltar"):
         go_to_login()
