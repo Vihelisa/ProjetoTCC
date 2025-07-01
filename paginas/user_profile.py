@@ -45,6 +45,6 @@ def user_profile():
                 "email": email
             }
             st.session_state.user_data.update()
-            insert_user_data(conn_user, cursor_user, new_data_dict)
+            update_user_data(conn_user, cursor_user, new_data_dict)
             st.success("Dados atualizados com sucesso!")
             st.session_state.edit_mode = False

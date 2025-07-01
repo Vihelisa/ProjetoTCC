@@ -118,7 +118,8 @@ def insert_db_user(conn, cursor, register_bd_dict):
     try:
         cursor.execute(sql, (register_bd_dict['username'], register_bd_dict['password']))
         conn.commit()
-    except cx_Oracle.IntegrityError:
+    except cx_Oracle.IntegrityError as e:
+        print(f"Erro ao tentar inserir usuário no banco de dados: {e}")
         st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
         return False
     return True
@@ -135,16 +136,18 @@ def register(register_dict, register_bd_dict):
         return False
 
 
-def insert_user_data(conn, cursor, register_dict):
+def update_user_data(conn, cursor, register_dict):
     sql = f"""
         UPDATE login_user_data 
         SET NAME = :1, LOGIN_PASSWORD = :2, NUM_OAB = :3
         WHERE EMAIL = :4
     """
     try:
-        cursor.execute(sql, (register_dict['nome'], register_dict['senha'], register_dict['oab'], register_dict['email']))
+        cursor.execute(sql, (register_dict['nome'], register_dict['senha'], register_dict['num_oab'], register_dict['email']))
         conn.commit()
-    except cx_Oracle.IntegrityError:
+        return True
+    except cx_Oracle.IntegrityError as e:
+        print(f"Erro ao tentar atualizar usuário: {e}")
         st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
         return False
-    return True
+    
