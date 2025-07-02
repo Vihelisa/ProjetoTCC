@@ -3,7 +3,7 @@ import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
 from functions.functions import *
-from config.auth import make_db_process
+from config.auth import *
 
 # Simulação de dados do banco
 
