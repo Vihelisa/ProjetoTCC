@@ -27,7 +27,10 @@ def carregar_processos(cursor):
 
 
 def meses_do_periodo(df):
-    return pd.period_range(df["MES"].min(), df["MES"].max(), freq="M")
+    meses = df["MES"].dropna()
+    if meses.empty:
+        return pd.period_range(start=pd.Timestamp.today(), periods=1, freq="M")
+    return pd.period_range(meses.min(), meses.max(), freq="M")
 
 
 def taxa_exito_por_area(df):

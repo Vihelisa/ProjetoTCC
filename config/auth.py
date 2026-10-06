@@ -12,6 +12,15 @@ DB_FILE = os.path.join("data", "app.db")
 
 _db_initialized = False
 
+SQL_INSERT_PROCESSOS = """
+    INSERT OR IGNORE INTO processos_juridicos (
+        NUMERO_PROCESSO, CLASSE_PROCESSO, RITO_PROCESSO, NOME_ADVOGADO, NUMERO_OAB,
+        NOME_CLIENTE_EMPRESA, CAMINHO_PROCESSUAL, NOME_JUIZ, ESTADO_PROCESSO,
+        VALOR_CAUSA, VALOR_DEFERIDO_CAUSA, VALOR_PAGO_CAUSA, OBSERVACOES_CLOB,
+        JUSTICA, TRIBUNAL, DATA_CADASTRO
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+"""
+
 
 def _create_schema(conn):
     conn.executescript("""
@@ -79,6 +88,9 @@ def _create_schema(conn):
     colunas = [linha[1] for linha in conn.execute("PRAGMA table_info(processos_juridicos)")]
     if "DATA_CADASTRO" not in colunas:
         conn.execute("ALTER TABLE processos_juridicos ADD COLUMN DATA_CADASTRO TEXT")
+    if conn.execute("SELECT COUNT(*) FROM processos_juridicos WHERE DATA_CADASTRO IS NULL").fetchone()[0]:
+        conn.execute("DELETE FROM processos_juridicos WHERE DATA_CADASTRO IS NULL")
+        conn.executemany(SQL_INSERT_PROCESSOS, seed_data.PROCESSOS_TESTE)
     conn.commit()
 
 
@@ -118,17 +130,7 @@ def _seed_if_empty(conn):
         )
 
     if _table_is_empty(conn, "processos_juridicos"):
-        conn.executemany(
-            """
-            INSERT INTO processos_juridicos (
-                NUMERO_PROCESSO, CLASSE_PROCESSO, RITO_PROCESSO, NOME_ADVOGADO, NUMERO_OAB,
-                NOME_CLIENTE_EMPRESA, CAMINHO_PROCESSUAL, NOME_JUIZ, ESTADO_PROCESSO,
-                VALOR_CAUSA, VALOR_DEFERIDO_CAUSA, VALOR_PAGO_CAUSA, OBSERVACOES_CLOB,
-                JUSTICA, TRIBUNAL, DATA_CADASTRO
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            seed_data.PROCESSOS_TESTE,
-        )
+        conn.executemany(SQL_INSERT_PROCESSOS, seed_data.PROCESSOS_TESTE)
 
     conn.commit()
 
