@@ -2,7 +2,7 @@ from PIL import Image
 from io import BytesIO
 import base64
 import streamlit as st
-import cx_Oracle
+import sqlite3
 from config.auth import *
 
 def conect_database_with_user():
@@ -86,36 +86,44 @@ def dict_prc_register_process(conn, cursor, process_number, lawyer_name, process
 
 
 def send_values_prc(register_process_dict, conn, cursor):
-    sql = """
-        BEGIN
-            inserir_processo_com_arquivo(
-                p_numero_processo         => :p_numero_processo,
-                p_classe_processo         => :p_classe_processo,
-                p_rito_processo           => :p_rito_processo,
-                p_nome_advogado           => :p_nome_advogado,
-                p_numero_oab              => :p_numero_oab,
-                p_nome_cliente_empresa    => :p_nome_cliente_empresa,
-                p_caminho_processual      => :p_caminho_processual,
-                p_nome_juiz               => :p_nome_juiz,
-                p_estado_processo         => :p_estado_processo,
-                p_valor_causa             => :p_valor_causa,
-                p_valor_definido_causa    => :p_valor_definido_causa,
-                p_valor_pago_causa        => :p_valor_pago_causa,
-                p_observacoes_clob        => :p_observacoes_clob,
-                p_justica                 => :p_justica,
-                p_tribunal                => :p_tribunal,
-                p_nome_arquivo            => :p_nome_arquivo,
-                p_arquivo_pdf             => :p_arquivo_pdf
-            );
-        END;
+    sql_processo = """
+        INSERT INTO processos_juridicos (
+            NUMERO_PROCESSO, CLASSE_PROCESSO, RITO_PROCESSO, NOME_ADVOGADO,
+            NUMERO_OAB, NOME_CLIENTE_EMPRESA, CAMINHO_PROCESSUAL, NOME_JUIZ,
+            ESTADO_PROCESSO, VALOR_CAUSA, VALOR_DEFERIDO_CAUSA, VALOR_PAGO_CAUSA,
+            OBSERVACOES_CLOB, JUSTICA, TRIBUNAL
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
+    sql_arquivo = """
+        INSERT INTO arquivos_processos (NUMERO_PROCESSO, NOME_ARQUIVO, ARQUIVO_PDF)
+        VALUES (?, ?, ?)
     """
 
-
     try:
-        cursor.setinputsizes(p_arquivo_pdf=cx_Oracle.BLOB, p_observacoes_clob=cx_Oracle.CLOB)
-        cursor.execute(sql, register_process_dict)
+        cursor.execute(sql_processo, (
+            register_process_dict['p_numero_processo'],
+            register_process_dict['p_classe_processo'],
+            register_process_dict['p_rito_processo'],
+            register_process_dict['p_nome_advogado'],
+            register_process_dict['p_numero_oab'],
+            register_process_dict['p_nome_cliente_empresa'],
+            register_process_dict['p_caminho_processual'],
+            register_process_dict['p_nome_juiz'],
+            register_process_dict['p_estado_processo'],
+            register_process_dict['p_valor_causa'],
+            register_process_dict['p_valor_definido_causa'],
+            register_process_dict['p_valor_pago_causa'],
+            register_process_dict['p_observacoes_clob'],
+            register_process_dict['p_justica'],
+            register_process_dict['p_tribunal'],
+        ))
+        cursor.execute(sql_arquivo, (
+            register_process_dict['p_numero_processo'],
+            register_process_dict['p_nome_arquivo'],
+            register_process_dict['p_arquivo_pdf'],
+        ))
         conn.commit()
-    except cx_Oracle.IntegrityError:
+    except sqlite3.IntegrityError:
         st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
         return False
     return True
@@ -140,20 +148,20 @@ def dict_edit_process(conn, cursor, process_path, case_value, def_case_value,
 def send_values_edit_process(edit_process_dict, conn, cursor):
     sql = '''
     UPDATE processos_juridicos
-    SET VALOR_CAUSA = :1,
-        VALOR_DEFERIDO_CAUSA = :2,
-        VALOR_PAGO_CAUSA = :3,
-        NOME_JUIZ = :4,
-        OBSERVACOES_CLOB = :5,
-        CAMINHO_PROCESSUAL = :6
-    WHERE NUMERO_PROCESSO = :7
+    SET VALOR_CAUSA = ?,
+        VALOR_DEFERIDO_CAUSA = ?,
+        VALOR_PAGO_CAUSA = ?,
+        NOME_JUIZ = ?,
+        OBSERVACOES_CLOB = ?,
+        CAMINHO_PROCESSUAL = ?
+    WHERE NUMERO_PROCESSO = ?
     '''
 
     try:
         cursor.execute(sql, (edit_process_dict['p_valor_causa'], edit_process_dict['p_valor_definido_causa'], edit_process_dict['p_valor_pago_causa'], edit_process_dict['p_nome_juiz'], edit_process_dict['p_observacoes_clob'], edit_process_dict['p_caminho_processual'], edit_process_dict['p_numero_processo']))
         conn.commit()
         print("Dados atualizados com sucesso!\n")
-    except cx_Oracle.IntegrityError:
+    except sqlite3.IntegrityError:
         st.toast("Erro ao tentar fazer cadastro de novo usuário!", icon="❌")
         return False
     return True
