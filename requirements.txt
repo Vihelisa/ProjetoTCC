@@ -4,3 +4,4 @@ streamlit-aggrid
 pandas
 pillow
 requests
+plotly

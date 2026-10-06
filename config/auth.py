@@ -58,7 +58,8 @@ def _create_schema(conn):
             VALOR_PAGO_CAUSA REAL,
             OBSERVACOES_CLOB TEXT,
             JUSTICA TEXT,
-            TRIBUNAL TEXT
+            TRIBUNAL TEXT,
+            DATA_CADASTRO TEXT
         );
 
         CREATE TABLE IF NOT EXISTS arquivos_processos (
@@ -75,6 +76,9 @@ def _create_schema(conn):
             ENDPOINT TEXT NOT NULL
         );
     """)
+    colunas = [linha[1] for linha in conn.execute("PRAGMA table_info(processos_juridicos)")]
+    if "DATA_CADASTRO" not in colunas:
+        conn.execute("ALTER TABLE processos_juridicos ADD COLUMN DATA_CADASTRO TEXT")
     conn.commit()
 
 
@@ -120,8 +124,8 @@ def _seed_if_empty(conn):
                 NUMERO_PROCESSO, CLASSE_PROCESSO, RITO_PROCESSO, NOME_ADVOGADO, NUMERO_OAB,
                 NOME_CLIENTE_EMPRESA, CAMINHO_PROCESSUAL, NOME_JUIZ, ESTADO_PROCESSO,
                 VALOR_CAUSA, VALOR_DEFERIDO_CAUSA, VALOR_PAGO_CAUSA, OBSERVACOES_CLOB,
-                JUSTICA, TRIBUNAL
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                JUSTICA, TRIBUNAL, DATA_CADASTRO
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             seed_data.PROCESSOS_TESTE,
         )

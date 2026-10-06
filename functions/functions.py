@@ -91,8 +91,8 @@ def send_values_prc(register_process_dict, conn, cursor):
             NUMERO_PROCESSO, CLASSE_PROCESSO, RITO_PROCESSO, NOME_ADVOGADO,
             NUMERO_OAB, NOME_CLIENTE_EMPRESA, CAMINHO_PROCESSUAL, NOME_JUIZ,
             ESTADO_PROCESSO, VALOR_CAUSA, VALOR_DEFERIDO_CAUSA, VALOR_PAGO_CAUSA,
-            OBSERVACOES_CLOB, JUSTICA, TRIBUNAL
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            OBSERVACOES_CLOB, JUSTICA, TRIBUNAL, DATA_CADASTRO
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, date('now'))
     """
     sql_arquivo = """
         INSERT INTO arquivos_processos (NUMERO_PROCESSO, NOME_ARQUIVO, ARQUIVO_PDF)
